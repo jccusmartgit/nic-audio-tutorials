@@ -1,0 +1,77 @@
+/* 🔲 Fondo oscuro que bloquea la pantalla */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* 📦 Contenedor del formulario */
+.modal-content {
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  box-shadow: 0px 0px 10px black;
+  position: relative;
+  max-width: 800px;
+}
+
+/* Inputs */
+.input-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.titulo-input,
+.descripcion-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+}
+
+label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: 0.3s;
+  padding: 0 5px;
+}
+
+.titulo-input:focus + label,
+.titulo-input:not(:placeholder-shown) + label,
+.descripcion-input:focus + label,
+.descripcion-input:not(:placeholder-shown) + label {
+  top: -10px;
+  font-size: 17px;
+}
+
+.archivo-input {
+  border: none;
+  width: 40%;
+}
+/* Botones */
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  color: white;
+  background: #28a745;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 80%;
+}
+
+button.cancelar {
+  background: #d9534f;
+}

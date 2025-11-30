@@ -1,0 +1,55 @@
+body{
+  margin: 0;
+}
+
+.App{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: 100vh;
+  width: 100vw;
+}
+
+.description{
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color:black
+  text-align: center;
+  max-width: 600px;
+  line-height: 1.5;
+  width: 60%;
+  padding: 20px;
+}
+
+img{
+  max-width: 100%;
+  height: 550px;
+  width: 40%;
+  margin-top: 20px;
+}
+
+/*RESPOMSIVE MOBILE DIVICE*/
+@media (max-width: 768px) {
+  .App{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    width: 100vw;
+  }
+
+  .description{
+    font-size: 20px;
+    width: 90%;
+    padding: 10px;
+  }
+
+  img{
+    display: none;
+    height: auto;
+    width: 90%;
+    margin-top: 10px;
+  }
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "titulo": "Convertir textos a documentos.",
+    "descripcion": "Tutorial paso a paso para convertir textos a documentos usando Samsung Notes.",
+    "media": "/media/convertir_textos_samsung_notes.mp3"
+  },
+  {
+    "titulo": "Dos alternativas para hacer tareas en Android",
+    "descripcion": "Tutorial paso a paso para realizar tareas con Google Docs desde Android.",
+    "media": "/media/dos_alternativas_para_hacer_tus_tareas_en_android.mp3"
+  },
+  {
+    "titulo": "Envío de audios en formato de documento.",
+    "descripcion": "Tutorial paso a paso para realizar envíos de documentos de audio por WhatsApp.",
+    "media": "/media/enviar_audios_en_forma_de_documento_WhatsApp.mp3"
+  },
+  {
+    "titulo": "Cómo renombrar archivos de audio",
+    "descripcion": "Tutorial paso a paso para renombrar archivos de audio.",
+    "media": "/media/renombrar_archivos_de_audio.mp3"
+  },
+  {
+    "id": 1763475248880,
+    "titulo": "Navidad",
+    "descripcion": "Canción de navidad",
+    "media": "/media/1763743543137-navidad.mp3"
+  }
+]

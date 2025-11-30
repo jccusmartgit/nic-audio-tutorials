@@ -1,0 +1,77 @@
+.form-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  width: 100%;
+  margin: 20px 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  width: 70%;
+  height: auto;
+}
+
+.input-container {
+  position: relative;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inputs */
+.archivo-input,
+.titulo-input,
+.descripcion-input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 16px;
+  outline: none;
+}
+
+/* Labels */
+label {
+  position:absolute;
+  top: 50%;
+  left: 14px;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  padding: 0 4px;
+}
+
+/* Efecto cuando el input está en foco o tiene contenido */
+.titulo-input:focus + label,
+.titulo-input:not(:placeholder-shown) + label,
+.descripcion-input:focus + label,
+.descripcion-input:not(:placeholder-shown) + label {
+  top: -10px;
+  font-size: 13px;
+}
+
+/* Botones */
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  width: 30%;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #218838;
+}
