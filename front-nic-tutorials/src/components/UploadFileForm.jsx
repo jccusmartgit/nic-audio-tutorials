@@ -21,7 +21,7 @@ function UploadFileForm({ onTutorialAdded }) {
     formData.append("archivo", archivo);
 
     try {
-      const response = await fetch("http://localhost:3000/api/tutorials", {
+      const response = await fetch("https://nic-audio-tutorials.onrender.com/api/tutorials", {
         method: "POST",
         body: formData,
       });

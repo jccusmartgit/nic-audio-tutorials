@@ -10,7 +10,7 @@ function TutorialsArea({ nuevoTutorial, adminMode = false }) {
 
   
   useEffect(() => {
-    fetch("http://localhost:3000/api/tutorials")
+    fetch("https://nic-audio-tutorials.onrender.com/api/tutorials")
       .then((res) => res.json())
       .then((data) => setTutoriales(data))
       .catch((err) => console.error("Error al cargar:", err));
@@ -60,7 +60,7 @@ const handleDelete = async (id) => {
   if (!confirmDelete) return;
 
   try {
-    const res = await fetch(`http://localhost:3000/api/tutorials/${id}`, {
+    const res = await fetch(`https://nic-audio-tutorials.onrender.com/api/tutorials/${id}`, {
       method: "DELETE"
     });
 

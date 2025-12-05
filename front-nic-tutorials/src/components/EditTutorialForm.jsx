@@ -14,7 +14,7 @@ function EditTutorialForm({ tutorial, onClose, onSave }) {
     formData.append("descripcion", descripcion);
     if (archivo) formData.append("archivo", archivo);
 
-    const res = await fetch(`http://localhost:3000/api/tutorials/${tutorial.id}`, {
+    const res = await fetch(`https://nic-audio-tutorials.onrender.com/api/tutorials/${tutorial.id}`, {
       method: "PUT",
       body: formData
     });
