@@ -6,84 +6,52 @@ import { fileURLToPath } from "url";
 
 const router = express.Router();
 
-// Configurar __dirname correctamente
+// Configurar __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Ruta absoluta hacia registers.json y carpeta media
+// Rutas absolutas correctas
 const filePath = path.join(__dirname, "..", "registers.json");
 const mediaPath = path.join(__dirname, "..", "media");
 
-// Crear carpeta media si no existe
+// Si la carpeta no existe en Render, la creamos
 if (!fs.existsSync(mediaPath)) {
   fs.mkdirSync(mediaPath, { recursive: true });
 }
 
-// Configurar Multer para guardar los audios
+// Configurar Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, mediaPath);
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
+    const unique = `${Date.now()}-${file.originalname}`;
+    cb(null, unique);
   },
 });
 const upload = multer({ storage });
 
 /* ============================
-    Obtener todos los tutoriales
+   GET: Obtener todos los tutoriales
 ============================ */
-/*router.get("/", (req, res) => {
+router.get("/", (req, res) => {
   try {
     const data = fs.readFileSync(filePath, "utf8");
     const tutorials = JSON.parse(data);
     res.json(tutorials);
   } catch (error) {
-    console.error(" Error al leer los registros:", error);
-    res.status(500).json({ error: "Error al leer los registros" });
-  }
-});*/
-
-
-router.get("/", (req, res) => {
-  try {
-    console.log(" Leyendo desde:", filePath);
-    if (!fs.existsSync(filePath)) {
-      console.error("⚠️ No existe el archivo:", filePath);
-      return res.status(404).json({ error: "Archivo no encontrado" });
-    }
-
-    const data = fs.readFileSync(filePath, "utf8").trim();
-    console.log("📄 Contenido leído:", data);
-
-    // Verificar si el archivo está vacío
-    if (!data) {
-      console.error("⚠️ El archivo JSON está vacío.");
-      return res.json([]);
-    }
-
-    const tutorials = JSON.parse(data);
-    if (!Array.isArray(tutorials)) {
-      console.error("⚠️ El archivo JSON no contiene un array.");
-      return res.status(500).json({ error: "Formato JSON inválido" });
-    }
-
-    res.json(tutorials);
-  } catch (error) {
-    console.error("❌ Error al leer los registros:", error.message);
-    res.status(500).json({ error: error.message });
+    console.error("Error leyendo registros:", error);
+    res.status(500).json({ error: "Error al leer registros" });
   }
 });
 
-
 /* ============================
-    Agregar un nuevo tutorial
+   POST: Agregar nuevo tutorial
 ============================ */
 router.post("/", upload.single("archivo"), (req, res) => {
   try {
     const { titulo, descripcion } = req.body;
-    const archivo = req.file ? req.file.filename : null;
+    const archivo = req.file?.filename;
 
     if (!titulo || !descripcion || !archivo) {
       return res.status(400).json({ error: "Datos incompletos" });
@@ -96,7 +64,7 @@ router.post("/", upload.single("archivo"), (req, res) => {
       id: Date.now(),
       titulo,
       descripcion,
-      media: `/media/${archivo}`, // ✅ referencia pública al archivo
+      media: `/media/${archivo}`,
     };
 
     tutorials.push(nuevoTutorial);
@@ -104,89 +72,37 @@ router.post("/", upload.single("archivo"), (req, res) => {
 
     res.status(201).json(nuevoTutorial);
   } catch (error) {
-    console.error("❌ Error al guardar:", error);
-    res.status(500).json({ error: "Error al escribir el registro" });
+    console.error("Error al guardar:", error);
+    res.status(500).json({ error: "Error al guardar registro" });
   }
 });
-
-router.delete("/:id", (req, res) => {
-  const id = Number(req.params.id);
-
-  try {
-    const data = fs .readFileSync(filePath, "utf8");
-    const tutorials = JSON.parse(data);
-    
-    const index = tutorials.findIndex((t) => t.id === id);
-
-    if (index === -1) {
-      return res.status(404).json({ error: "Tutorial no encontrado" });
-    }
-
-    const tutorialToDelete = tutorials[index];
-    console.log(" Tutorial a eliminar:", tutorialToDelete);
-    //eliminar audio mp3
-    const audioPath = path.join(__dirname, "..", tutorialToDelete.media);
-    if (fs.existsSync(audioPath)) {
-      fs.unlinkSync(audioPath);
-      console.log(" Archivo de audio eliminado:", audioPath);
-    }
-
-    //Eliminar del json
-    const updateTutorials = tutorials.filter((t) => t.id !== id);
-    fs.writeFileSync(filePath, JSON.stringify(updateTutorials, null, 2), "utf8");
-
-    res.json({ message: "Tutorial eliminado correctamente" });
-
-  } catch (error) {
-    console.error("Error al eliminar el tutorial:", error);
-    res.status(500).json({ error: "Error al eliminar el tutorial" });
-  }
-});  
 
 /* ============================
-   ✏️ Actualizar un tutorial por ID
+   DELETE: Eliminar un tutorial
 ============================ */
-router.put("/:id", upload.single("archivo"), (req, res) => {
-  const id = Number(req.params.id);
-
+router.delete("/:id", (req, res) => {
   try {
+    const id = Number(req.params.id);
+
     const data = fs.readFileSync(filePath, "utf8");
-    const tutorials = JSON.parse(data);
+    let tutorials = JSON.parse(data);
 
-    const index = tutorials.findIndex((t) => t.id === id);
-    if (index === -1) {
-      return res.status(404).json({ error: "Tutorial no encontrado" });
-    }
+    const tutorial = tutorials.find((t) => t.id === id);
+    if (!tutorial) return res.status(404).json({ error: "No existe el tutorial" });
 
-    const tutorial = tutorials[index];
+    // Eliminar archivo físico
+    const audioPath = path.join(__dirname, "..", tutorial.media);
+    if (fs.existsSync(audioPath)) fs.unlinkSync(audioPath);
 
-    // Si subió un nuevo archivo, eliminar el anterior
-    let mediaPathFinal = tutorial.media;
+    // Eliminar del JSON
+    tutorials = tutorials.filter((t) => t.id !== id);
+    fs.writeFileSync(filePath, JSON.stringify(tutorials, null, 2), "utf8");
 
-    if (req.file) {
-      const oldFile = path.join(__dirname, "..", tutorial.media);
-      if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
-
-      mediaPathFinal = `/media/${req.file.filename}`;
-    }
-
-    // Actualizar campos
-    const updated = {
-      ...tutorial,
-      titulo: req.body.titulo || tutorial.titulo,
-      descripcion: req.body.descripcion || tutorial.descripcion,
-      media: mediaPathFinal
-    };
-
-    tutorials[index] = updated;
-    fs.writeFileSync(filePath, JSON.stringify(tutorials, null, 2));
-
-    res.json(updated);
-  } catch (err) {
-    console.error("❌ Error al actualizar:", err);
-    res.status(500).json({ error: "Error al actualizar el registro" });
+    res.json({ message: "Tutorial eliminado", id });
+  } catch (error) {
+    console.error("Error al eliminar:", error);
+    res.status(500).json({ error: "Error al eliminar" });
   }
 });
-
 
 export default router;
