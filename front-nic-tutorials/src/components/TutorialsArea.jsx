@@ -44,7 +44,8 @@ function TutorialsArea({ nuevoTutorial, adminMode = false }) {
 
   const handleUpdate = (tutorial) => {
     setEditando(tutorial);
-    alert(`Actualizar tutorial: ${tutoriales[index].titulo}`);
+    alert(`Actualizar tutorial: ${tutorial.titulo}`);
+    //alert(`Actualizar tutorial: ${tutoriales[index].titulo}`);
   };
 
   /*const handleDelete = (index) => {
