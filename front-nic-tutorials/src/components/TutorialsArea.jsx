@@ -91,7 +91,7 @@ const handleDelete = async (id) => {
             controls
             tabIndex="0"
             ref={index === tutoriales.length - 1 ? lastAudioRef : null}
-            src={`http://localhost:3000${t.media}`}
+            src={`https://nic-audio-tutorials.onrender.com${t.media}`}
           ></audio>
 
           {adminMode ? (
@@ -113,7 +113,7 @@ const handleDelete = async (id) => {
             </div>
           ) : (
             <a
-              href={`http://localhost:3000${t.media}`}
+              href={`https://nic-audio-tutorials.onrender.com${t.media}`}
               download
               className="descargar"
               aria-label={`Descargar ${t.titulo}`}
