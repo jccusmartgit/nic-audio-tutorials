@@ -2,12 +2,25 @@ import React, { useState, useEffect, useRef } from "react";
 import "./styles/TutorialsArea.css";
 import EditTutorialForm from "./EditTutorialForm";
 
+const speak = (text) => {
+  if (!("speechSynthesis" in window)) return;
+
+  const msg = new SpeechSynthesisUtterance(text);
+  msg.lang = "es-ES";
+  msg.rate = 1;
+  msg.pitch = 1;
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(msg);
+};
+
+
 function TutorialsArea({ nuevoTutorial, adminMode = false }) {
   const [tutoriales, setTutoriales] = useState([]);
   const [filtrados, setFiltrados] = useState([]);
   const [editando, setEditando] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-
+  const [adminMode, setAdminMode] = useState(false);
   const firstResultRef = useRef(null);
   const endRef = useRef(null);
   const lastAudioRef = useRef(null);
@@ -44,7 +57,7 @@ function TutorialsArea({ nuevoTutorial, adminMode = false }) {
   }, [nuevoTutorial]);
 
   // 🔹 Función de búsqueda al presionar ENTER
-  const buscar = (e) => {
+  /*const buscar = (e) => {
     if (e.key !== "Enter") return;
 
     const termino = busqueda.trim().toLowerCase();
@@ -65,7 +78,50 @@ function TutorialsArea({ nuevoTutorial, adminMode = false }) {
     setTimeout(() => {
       firstResultRef.current?.focus();
     }, 150);
-  };
+  }; */
+
+const ejecutarBusqueda = () => {
+  const termino = busqueda.trim().toLowerCase();
+
+  // 🔐 CLAVE ADMIN
+  if (termino === "clave555") {
+    setBusqueda("");
+    setAdminMode(true);
+
+    speak("Modo administración activo");
+
+    setTimeout(() => {
+      document.getElementById("admin-panel")?.focus();
+    }, 300);
+
+    return;
+  }
+
+  // 🔎 BÚSQUEDA NORMAL
+  if (!termino) {
+    setFiltrados(tutoriales);
+    return;
+  }
+
+  const resultados = tutoriales.filter(t =>
+    t.titulo.toLowerCase().includes(termino) ||
+    t.descripcion.toLowerCase().includes(termino)
+  );
+
+  setFiltrados(resultados);
+
+  setTimeout(() => {
+    firstResultRef.current?.focus();
+  }, 200);
+};
+
+const handleKeyDown = (e) => {
+  if (e.key === "Enter") {
+    ejecutarBusqueda();
+  }
+};
+
+
 
   // 🔹 Abrir formulario de edición
   const handleUpdate = (tutorial) => {
@@ -97,28 +153,47 @@ function TutorialsArea({ nuevoTutorial, adminMode = false }) {
     }
   };
 
+  const lista = filtrados.length ? filtrados : tutoriales;
+
+
   return (
     <div className="tutorial-list">
       <h1 tabIndex="0">Lista de tutoriales</h1>
 
       {/* 🔍 BUSCADOR */}
-      <input
-        type="text"
-        placeholder="Buscar tutoriales..."
-        className="buscador"
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-        onKeyDown={buscar}
-        aria-label="Buscar tutoriales. Coloca los parámetros y presona enter."
-      />
+      <div className="search-box">
+        <input
+          type="text"
+          className="buscador"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Buscar tutorial..."
+          aria-label="Buscar tutorial"
+        />
 
-      {filtrados.map((t, index) => (
+        <button
+          onClick={ejecutarBusqueda}
+          aria-label="Ejecutar búsqueda"
+        >
+          Buscar
+        </button>
+      </div>
+
+
+      {lista.map((t, index) => (
         <div
           key={t.id}
           className="tutorial-item"
           ref={index === 0 ? firstResultRef : null}
         >
-          <p className="titulo" tabIndex="0">{t.titulo}</p>
+          <p 
+            className="titulo" 
+            tabIndex="0" 
+            ref={index === 0 ? firstResultRef : null}
+          >
+            {t.titulo}
+          </p>
           <p className="descripcion" tabIndex="0">{t.descripcion}</p>
 
           <audio

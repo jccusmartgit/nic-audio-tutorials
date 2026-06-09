@@ -9,7 +9,12 @@ function Manager () {
     
 
     return (
-        <div className="admin">
+        <div 
+            className="admin" 
+            aria-live="assertive"
+            id="admin-panel"
+            tabIndex="-1"
+            >
             <h1>Administración de tuotoriales</h1>
             <UploadFileForm  onTutorialAdded={setNuevoTutorial} />
             <TutorialsArea  nuevoTutorial={nuevoTutorial} adminMode = { true } />
