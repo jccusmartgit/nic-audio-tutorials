@@ -57,10 +57,11 @@ router.get("/", async (req, res) => {
 
   } catch (error) {
 
-    console.error(error);
+    console.error("ERROR POSTGRES:", error);
+    //console.error(error);
 
     res.status(500).json({
-      error: "Error obteniendo tutoriales"
+      error: error.message  //"Error obteniendo tutoriales"
     });
   }
 });
