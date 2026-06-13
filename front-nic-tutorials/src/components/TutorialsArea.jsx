@@ -200,7 +200,7 @@ const handleKeyDown = (e) => {
             controls
             tabIndex="0"
             ref={index === filtrados.length - 1 ? lastAudioRef : null}
-            src={`https://nic-audio-tutorials.onrender.com${t.media}`}
+            src={t.media}
           ></audio>
 
           {adminMode ? (
@@ -222,7 +222,7 @@ const handleKeyDown = (e) => {
             </div>
           ) : (
             <a
-              href={`https://nic-audio-tutorials.onrender.com${t.media}`}
+              href={t.media}
               download
               className="descargar"
               aria-label={`Descargar ${t.titulo}`}

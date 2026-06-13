@@ -4,6 +4,7 @@ import pool from "../db.js";
 import path from "path";
 import multer from "multer";
 import { fileURLToPath } from "url";
+import supabase from "../supabase.js";
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ if (!fs.existsSync(mediaPath)) {
 }
 
 // Configurar Multer
-const storage = multer.diskStorage({
+/*const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, mediaPath);
   },
@@ -30,7 +31,7 @@ const storage = multer.diskStorage({
     cb(null, unique);
   },
 });
-const upload = multer({ storage });
+const upload = multer({ storage });*/
 
 /* ============================
    GET: Obtener todos los tutoriales
@@ -45,6 +46,10 @@ const upload = multer({ storage });
     res.status(500).json({ error: "Error al leer registros" });
   }
 });*/
+const upload = multer({
+  storage: multer.memoryStorage()
+});
+
 router.get("/", async (req, res) => {
 
   try {
@@ -109,16 +114,43 @@ router.post("/", upload.single("archivo"), async (req, res) => {
       });
     }
 
-    const media = `/media/${req.file.filename}`;
+    const fileName = `${Date.now()}-${req.file.originalname}`;
 
-    const result = await pool.query(
+    const { error } = await supabase.storage
+  .  from("audios")
+  .  upload(fileName, req.file.buffer, {
+     contentType: req.file.mimetype,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+     //Get public URL
+    const { data } = supabase.storage
+  .   from("audios")
+     .getPublicUrl(fileName);
+
+    const media = data.publicUrl;
+
+    /*const result = await pool.query(
       `
       INSERT INTO tutorials
       (titulo, descripcion, media)
       VALUES ($1,$2,$3)
       RETURNING *
       `,
-      [titulo, descripcion, media]
+      [titulo, descripcion, fileName]
+    );*/
+
+    const result = await pool.query(
+`
+      INSERT INTO tutorials
+        (titulo, descripcion, media)
+      VALUES ($1,$2,$3)
+      RETURNING *
+`,
+        [titulo, descripcion, media]
     );
 
     res.status(201).json(result.rows[0]);
@@ -196,7 +228,7 @@ router.put("/:id", upload.single("archivo"), async (req, res) => {
 
     if (req.file) {
 
-      const media = `/media/${req.file.filename}`;
+      const fileName = `${Date.now()}-${req.file.originalname}`;
 
       const result = await pool.query(
         `
