@@ -155,7 +155,7 @@ const handleKeyDown = (e) => {
 
   const lista = filtrados.length ? filtrados : tutoriales;
 
-
+  //render
   return (
     <div className="tutorial-list">
       <h1 tabIndex="0">Lista de tutoriales</h1>
